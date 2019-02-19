@@ -1,3 +1,4 @@
+# 1. How instance methods work?
 class Test:
     """Testing how descriptors work."""
 
@@ -11,10 +12,12 @@ class Test:
     def show(msg):
         print(msg)
 
-# Depending on how we call show we pass it the instance or not
+# Depending on how we call the show method
+# we pass it the instance or not
 # The line below works
 Test.show('What the Fuck?')
-# but this one is not (since it implicitly passes self)
+# but this one is not 
+# since it implicitly passes self
 try:
     Test().show('What the Fuck?')
 except TypeError:
@@ -30,13 +33,13 @@ assert Test.ret.__get__(instance, Test)() == instance
 # Since these gives the same results
 returned = Test.ret.__get__(instance, Test)()
 assert returned == instance
-# But this is not
+# But this do not
 assert not Test().ret.__get__(instance, Test)() == instance
-# Altough this works :P
+# Altough this works fine :P
 type(Test()).ret.__get__(instance, Test)() == instance
 
 
-# Staticmethod implementation in Python
+# 2. Staticmethod implementation in Python
 class StaticMethod:
     "Emulate PyStaticMethod_Type() in Objects/funcobject.c"
 
@@ -46,13 +49,13 @@ class StaticMethod:
     def __get__(self, obj, objtype=None):
         return self.f
 
-class Sample:
+class StaticMethodTest:
 
     @StaticMethod
     def test(arg):
         return arg
 
-assert Sample.test(1) == Sample().test(1)
+assert StaticMethodTest.test(1) == StaticMethodTest().test(1)
 
 # What if we try to use it on regular function?
 @StaticMethod
@@ -65,7 +68,7 @@ except TypeError:
     print('Actually it doesn\'t work. Functions don\'t use descriptors.')
 
 
-# Classmethod implementation in Python
+# 3. Classmethod implementation in Python
 class ClassMethod:
     "Emulate PyClassMethod_Type() in Objects/funcobject.c"
 
@@ -79,18 +82,18 @@ class ClassMethod:
             return self.f(objtype, *args)
         return func
 
-class Sample:
+class ClassMethodTest:
     
     @ClassMethod
     def test(cls, arg):
         return arg
 
-assert Sample.test(1) == Sample().test(1)
+assert ClassMethodTest.test(1) == ClassMethodTest().test(1)
 
 
-# Just for fun, implmentation of InstanceMethod
+# 4. Just for fun, implmentation of InstanceMethod
 # This way it would be less ambigous
-# than current implementation
+# than the current implementation
 class InstanceMethod:
     "Emulate PyClassMethod_Type() in Objects/funcobject.c"
 
@@ -105,7 +108,7 @@ class InstanceMethod:
             return self.f(obj, *args)
         return func
 
-class Sample:
+class InstanceMethodTest:
 
     @InstanceMethod
     def test(self, arg):
@@ -113,12 +116,12 @@ class Sample:
         return arg
 
 try:
-    Sample.test()
+    InstanceMethodTest.test()
 except TypeError:
     print('Can\'t invoke instance method from class')
 
-
-# How about properties?
+# 5. How about properties?
+# Can You control setting property value?
 class NonNullProperty:
 
     def __init__(self, initval=0):
@@ -126,21 +129,59 @@ class NonNullProperty:
     
     def __set__(self, obj, value):
         if not value:
-            raise ValueError('You shall not pass!')
+            raise AttributeError('You shall not pass!')
         self.val = value
-    
-    def __repr__(self):
-        return repr(self.val)
 
-class Test:
+class NonNullPropertyTest:
     x = NonNullProperty()
 
-test = Test()
+# On instance
 try:
-    test.x = None
-except ValueError:
-    print('Seems legit!')
+    # This should not work
+    NonNullPropertyTest().x = None
+except AttributeError:
+    print('Cannot set NonNullProperty to None on instance!')
+else:
+    print('I did set NonNullProperty to None on instance!')
 
-# What if I try to access it?
-test.x = 1
-print('Set NonNullProperty to', test.x)
+# And on class
+try:
+    # But this works just fine
+    NonNullPropertyTest.x = None
+except AttributeError:
+    print('Cannot set NonNullProperty to None on class!')
+else:
+    print('I did set NonNullProperty to None on class! It is no longer NonNullProperty either...')
+
+NonNullPropertyTest().x = None
+print('And now it\'s no problem to set it to None...')
+
+# How can You control getting property value
+class InvisibleProperty:
+
+    def __init__(self, initval=0):
+        self.val = initval
+    
+    def __get__(self, obj, objtype=None):
+        raise AttributeError('Can\'t see me!')
+    
+    def __set__(self, obj, value):
+        self.val = value
+
+class InvisiblePropertyTest:
+    x = InvisibleProperty()
+
+# On instance
+try:
+    # This should not work
+    print(InvisiblePropertyTest().x)
+except AttributeError:
+    print('I really can\'t see the InvisibleProperty!')
+
+# On class
+try:
+    # Neither do this
+    print(InvisiblePropertyTest.x)
+except AttributeError:
+    print('Even from the class!')
+
