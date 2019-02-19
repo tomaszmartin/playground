@@ -15,13 +15,13 @@ class Test:
 # Depending on how we call the show method
 # we pass it the instance or not
 # The line below works
-Test.show('What the Fuck?')
+Test.show('Wrong definition works ok on class?')
 # but this one is not 
 # since it implicitly passes self
 try:
-    Test().show('What the Fuck?')
+    Test().show('And on instance?')
 except TypeError:
-    print('What the Fuck?')
+    print('But not on the instance.')
 
 # Due to descriptor the signature of
 # the method changes dynamically
@@ -29,7 +29,7 @@ instance = Test()
 assert Test.ret.__get__(instance, Test) == instance.ret
 assert Test.ret.__get__(instance, Test)() == instance
 
-# But only on the class level?
+# Descriptors work onluy on the class level?
 # Since these gives the same results
 returned = Test.ret.__get__(instance, Test)()
 assert returned == instance
@@ -37,6 +37,7 @@ assert returned == instance
 assert not Test().ret.__get__(instance, Test)() == instance
 # Altough this works fine :P
 type(Test()).ret.__get__(instance, Test)() == instance
+print()
 
 
 # 2. Staticmethod implementation in Python
@@ -66,6 +67,7 @@ try:
     regular_func(1)
 except TypeError:
     print('Actually it doesn\'t work. Functions don\'t use descriptors.')
+print()
 
 
 # 3. Classmethod implementation in Python
@@ -89,6 +91,7 @@ class ClassMethodTest:
         return arg
 
 assert ClassMethodTest.test(1) == ClassMethodTest().test(1)
+print()
 
 
 # 4. Just for fun, implmentation of InstanceMethod
@@ -119,6 +122,8 @@ try:
     InstanceMethodTest.test()
 except TypeError:
     print('Can\'t invoke instance method from class')
+print()
+
 
 # 5. How about properties?
 # Can You control setting property value?
@@ -185,3 +190,10 @@ try:
 except AttributeError:
     print('Even from the class!')
 
+
+# To sum up:
+# - descriptors work for methods on both class and instance level
+#   but if You invoke them on class level
+# - but on attributes not so much
+#   when set from class level they are overriden like any other value
+#   no magic here, but getting works as expected
