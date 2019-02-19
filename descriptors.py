@@ -7,9 +7,9 @@ class Test:
     def ret(self):
         return self
     
+    # What's wrong here?
     def show(msg):
         print(msg)
-
 
 # Depending on how we call show we pass it the instance or not
 # The line below works
@@ -20,13 +20,11 @@ try:
 except TypeError:
     print('What the Fuck?')
 
-
 # Due to descriptor the signature of
-# the method changes dynamically?
+# the method changes dynamically
 instance = Test()
 assert Test.ret.__get__(instance, Test) == instance.ret
 assert Test.ret.__get__(instance, Test)() == instance
-
 
 # But only on the class level?
 # Since these gives the same results
@@ -54,8 +52,17 @@ class Sample:
     def test(arg):
         return arg
 
-
 assert Sample.test(1) == Sample().test(1)
+
+# What if we try to use it on regular function?
+@StaticMethod
+def regular_func(arg):
+    print(arg)
+
+try:
+    regular_func(1)
+except TypeError:
+    print('Actually it doesn\'t work. Functions don\'t use descriptors.')
 
 
 # Classmethod implementation in Python
@@ -72,13 +79,11 @@ class ClassMethod:
             return self.f(objtype, *args)
         return func
 
-
 class Sample:
     
     @ClassMethod
     def test(cls, arg):
         return arg
-
 
 assert Sample.test(1) == Sample().test(1)
 
@@ -100,7 +105,6 @@ class InstanceMethod:
             return self.f(obj, *args)
         return func
 
-
 class Sample:
 
     @InstanceMethod
@@ -112,3 +116,31 @@ try:
     Sample.test()
 except TypeError:
     print('Can\'t invoke instance method from class')
+
+
+# How about properties?
+class NonNullProperty:
+
+    def __init__(self, initval=0):
+        self.val = initval
+    
+    def __set__(self, obj, value):
+        if not value:
+            raise ValueError('You shall not pass!')
+        self.val = value
+    
+    def __repr__(self):
+        return repr(self.val)
+
+class Test:
+    x = NonNullProperty()
+
+test = Test()
+try:
+    test.x = None
+except ValueError:
+    print('Seems legit!')
+
+# What if I try to access it?
+test.x = 1
+print('Set NonNullProperty to', test.x)
