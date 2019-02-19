@@ -19,3 +19,13 @@ assert oldid == newid
 oldid = id(Test(1))
 newid = id(Test(1))
 assert oldid == newid
+
+# Default classes are passed as reference
+# Same as lists unlike int or floata
+def func(atest):
+    atest.arg = 1
+
+test = Test()
+assert test.arg is None
+func(test)
+assert test.arg == 1
