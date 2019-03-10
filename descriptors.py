@@ -191,6 +191,42 @@ except AttributeError:
     print('Even from the class!')
 
 
+# What happens if we cahnge class atrribute 
+# On the instance level?
+class ClassAttr:
+    x = 1
+
+i1 = ClassAttr()
+i2 = ClassAttr()
+assert i1.x == i2.x
+i1.x = 2
+# It changes the value
+assert i1.x == 2
+# But only for a given instance
+assert i2.x == 1
+
+
+# What happens with read only property?
+class ClassProperty:
+    @property
+    def x(self):
+        return 1
+
+i1 = ClassProperty()
+i2 = ClassProperty()
+# This indeed raises and error
+try:
+    i1.x = 10
+except AttributeError:
+    print('Read only attributes work on instance level!')
+
+try:
+    ClassProperty.x = 2
+    print('But You can do what You want on class level!')
+except AttributeError:
+    pass
+
+
 # To sum up:
 # - descriptors work for methods on both class and instance level
 #   but if You invoke them on class level
