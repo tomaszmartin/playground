@@ -9,15 +9,17 @@ RELOAD = 3
 
 
 def main(arg):
+    # Just pretending to have something to do.
+    # In flask it handles incoming requests
     while True:
         time.sleep(1)
-        print(f'Serving.')
+        print(f'Incoming request.')
 
 
 def run_main(arg):
     while True:
-        print(f'Spawning new process.')
-        exit_code = subprocess.call(['python3', 'reloader.py', 'restart'], close_fds=False)
+        print(f'Spawning new process with reloader.')
+        exit_code = subprocess.call(['python3', 'reloader.py', 'with-reloader'], close_fds=False)
         # If process returns exit RELOAD
         # Than spawn another subprocess
         # Else exit the app
@@ -36,11 +38,11 @@ if __name__ == '__main__':
     # Run the main loop only from subprocesses
     # not from the main process.
     # Wont be run at first launch.
-    if arg and arg[0] == 'restart':
+    if arg and arg[0] == 'with-reloader':
         t = threading.Thread(target=main, args=[arg])
         t.setDaemon(True)
         t.start()
-        # Looking
+        # Simulating waiting for changes in files
         run_reloader()
     # At first launch start the loop that spawns
     # Subprocesses with current file.
