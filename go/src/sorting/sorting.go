@@ -1,9 +1,7 @@
-package main
-
-import "fmt"
+package sorting
 
 // Sort makes a copy of the slice and sorts it using bubble sort.
-func Sort(items []int) []int {
+func BubbleSort(items []int) []int {
 	sortedPositions := 0
 	cnt := 0
 
@@ -20,10 +18,4 @@ func Sort(items []int) []int {
 		sortedPositions++
 	}
 	return items
-}
-
-func main() {
-	unsorted := []int{1, 9, 7, 5, 2, 8, 6, 4, -10, -100}
-	fmt.Println("Unsorted: ", unsorted)
-	fmt.Println("Sorted: ", Sort(unsorted))
 }
