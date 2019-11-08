@@ -1,6 +1,6 @@
 package sorting
 
-// Sort makes a copy of the slice and sorts it using bubble sort.
+// BubbleSort sorts a slice using bubble sort algorithm.
 func BubbleSort(items []int) []int {
 	sortedPositions := 0
 	cnt := 0
