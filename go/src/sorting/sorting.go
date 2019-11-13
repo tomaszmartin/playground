@@ -1,6 +1,7 @@
 package sorting
 
-// BubbleSort sorts a slice using bubble sort algorithm.
+// BubbleSort sorts a slice of integers
+// using bubble sort algorithm O(n^2).
 func BubbleSort(items []int) []int {
 	sortedPositions := 0
 	cnt := 0
@@ -19,7 +20,8 @@ func BubbleSort(items []int) []int {
 	return items
 }
 
-// InsertionSort sorts a slice of integers using insertion sort algorithm.
+// InsertionSort sorts a slice of integers
+// using insertion sort algorithm O(n^2).
 func InsertionSort(items []int) []int {
 	// We consider first item sorted since there
 	// is nothing to the left to compere it with.
@@ -42,7 +44,8 @@ func InsertionSort(items []int) []int {
 	return items
 }
 
-// SelectionSort sorts a slice of integers using selection sort algorithm.
+// SelectionSort sorts a slice of integers
+// using selection sort algorithm O(n^2).
 func SelectionSort(items []int) []int {
 	for i := 0; i < len(items); i++ {
 		min := i
