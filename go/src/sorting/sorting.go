@@ -4,7 +4,6 @@ package sorting
 func BubbleSort(items []int) []int {
 	sortedPositions := 0
 	cnt := 0
-
 	for !(sortedPositions == len(items)) {
 		for i := 0; i < len(items)-sortedPositions-1; i++ {
 			if items[i] > items[i+1] {
@@ -39,6 +38,20 @@ func InsertionSort(items []int) []int {
 				break
 			}
 		}
+	}
+	return items
+}
+
+// SelectionSort sorts a slice of integers using selection sort algorithm.
+func SelectionSort(items []int) []int {
+	for i := 0; i < len(items); i++ {
+		min := i
+		for j := i; j < len(items); j++ {
+			if items[j] < items[min] {
+				min = j
+			}
+		}
+		items[i], items[min] = items[min], items[i]
 	}
 	return items
 }

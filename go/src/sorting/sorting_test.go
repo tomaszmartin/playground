@@ -24,3 +24,7 @@ func BenchmarkBubbleSort(b *testing.B) {
 func BenchmarkInsertSort(b *testing.B) {
 	benchmarkSort(b, 1000, InsertionSort)
 }
+
+func BenchmarkSelectionSort(b *testing.B) {
+	benchmarkSort(b, 1000, SelectionSort)
+}
