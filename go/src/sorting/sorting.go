@@ -58,3 +58,33 @@ func SelectionSort(items []int) []int {
 	}
 	return items
 }
+
+// TestSort sorts a slice of integers.
+func TestSort(items []int) []int {
+	if len(items) < 2 {
+		return items
+	}
+
+	middleIx := len(items) / 2
+	middleVal := items[middleIx]
+	var less []int
+	var greater []int
+	var middle []int
+	for i := 0; i < len(items); i++ {
+		curr := items[i]
+		if items[i] < middleVal {
+			less = append(less, curr)
+		} else if items[i] > middleVal {
+			greater = append(greater, curr)
+		} else {
+			middle = append(middle, curr)
+		}
+
+	}
+
+	less = TestSort(less)
+	greater = TestSort(greater)
+	less = append(less, middle...)
+	items = append(less, greater...)
+	return items
+}
