@@ -2,9 +2,12 @@ package sorting
 
 import (
 	"math/rand"
+	"sort"
 	"testing"
 	"time"
 )
+
+var nItems int = 7500
 
 type algorithm func([]int) []int
 
@@ -30,18 +33,27 @@ func random(n int) []int {
 	return items
 }
 
+func defaultSort(items []int) []int {
+	sort.Ints(items)
+	return items
+}
+
+func BenchmarkDefaultSort(b *testing.B) {
+	benchmarkSort(b, nItems, defaultSort)
+}
+
 func BenchmarkBubbleSort(b *testing.B) {
-	benchmarkSort(b, 5000, BubbleSort)
+	benchmarkSort(b, nItems, BubbleSort)
 }
 
 func BenchmarkSelectionSort(b *testing.B) {
-	benchmarkSort(b, 5000, SelectionSort)
+	benchmarkSort(b, nItems, SelectionSort)
 }
 
 func BenchmarkInsertSort(b *testing.B) {
-	benchmarkSort(b, 5000, InsertionSort)
+	benchmarkSort(b, nItems, InsertionSort)
 }
 
 func BenchmarkTestSort(b *testing.B) {
-	benchmarkSort(b, 5000, TestSort)
+	benchmarkSort(b, nItems, TestSort)
 }
