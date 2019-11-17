@@ -16,6 +16,17 @@ func benchmarkSort(b *testing.B, n int, fn algorithm) {
 	fn(items)
 }
 
+func testSort(t *testing.T, fn algorithm) {
+	items := []int{1, 0, 0, 4, 90, 5, 13, 17, 2, -10, 100}
+	sorted := []int{-10, 0, 0, 1, 2, 4, 5, 13, 17, 90, 100}
+	got := fn(items)
+	for i, v := range sorted {
+		if v != got[i] {
+			t.Errorf("Should get %d, but got %d", sorted, got)
+		}
+	}
+}
+
 func reversed(n int) []int {
 	items := make([]int, n)
 	for i := 0; i < n; i++ {
@@ -46,14 +57,30 @@ func BenchmarkBubbleSort(b *testing.B) {
 	benchmarkSort(b, nItems, BubbleSort)
 }
 
+func TestBubbleSort(t *testing.T) {
+	testSort(t, BubbleSort)
+}
+
 func BenchmarkSelectionSort(b *testing.B) {
 	benchmarkSort(b, nItems, SelectionSort)
+}
+
+func TestSelectionSort(t *testing.T) {
+	testSort(t, BubbleSort)
 }
 
 func BenchmarkInsertSort(b *testing.B) {
 	benchmarkSort(b, nItems, InsertionSort)
 }
 
+func TestInsertSort(t *testing.T) {
+	testSort(t, BubbleSort)
+}
+
 func BenchmarkTestSort(b *testing.B) {
 	benchmarkSort(b, nItems, TestSort)
+}
+
+func TestTestSort(t *testing.T) {
+	testSort(t, BubbleSort)
 }
